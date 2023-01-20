@@ -12,11 +12,20 @@ app.use(express.json())
 app.use(cors())
 
 const client = new MongoClient(dbUri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+
 async function run() {
     try{
+        let userCollection = await client.db('toonTab').collection('users')
+
         app.get('/', (req, res) => {
             res.send({message: "This is the root API of TOON TAB application server."});
         })
+
+        app.get('/all-users', async (req, res) => {
+            let users = await userCollection.find({}).toArray()
+            res.send({users})
+        })
+
     }
     finally{
 
